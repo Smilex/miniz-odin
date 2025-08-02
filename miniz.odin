@@ -147,8 +147,8 @@ foreign miniz {
     zip_reader_extract_file_to_mem :: proc (pZip: ^zip_archive, pFilename: cstring, pBuf: rawptr, buf_size: c.size_t, flags: u32) -> b32 ---
     zip_reader_extract_to_heap :: proc (pZip: ^zip_archive, file_index: u32, pSize: ^c.size_t, flags: u32) -> rawptr ---
     zip_reader_extract_file_to_heap :: proc (pZip: ^zip_archive, pFilename: cstring, pSize: ^c.size_t, flags: u32) -> rawptr ---
-    zip_reader_extract_to_callback :: proc (pZip: ^zip_archive, file_index: u32, pCallback: ^file_write_func, pOpaque: rawptr, flags: u32) -> b32 ---
-    zip_reader_extract_file_to_callback :: proc (pZip: ^zip_archive, pFilename: cstring, pCallback: ^file_write_func, pOpaque: rawptr, flags: u32) -> b32 ---
+    zip_reader_extract_to_callback :: proc (pZip: ^zip_archive, file_index: u32, pCallback: file_write_func, pOpaque: rawptr, flags: u32) -> b32 ---
+    zip_reader_extract_file_to_callback :: proc (pZip: ^zip_archive, pFilename: cstring, pCallback: file_write_func, pOpaque: rawptr, flags: u32) -> b32 ---
     zip_reader_extract_iter_new :: proc (pZip: ^zip_archive, file_index: u32, flags: u32) -> ^zip_reader_extract_iter_state ---
     zip_reader_extract_file_iter_new :: proc (pZip: ^zip_archive, pFilename: cstring, flags: u32) -> ^zip_reader_extract_iter_state ---
     zip_reader_extract_iter_read :: proc (pState: ^zip_reader_extract_iter_state, pvBuf: rawptr, buf_size: c.size_t) -> c.size_t ---
@@ -169,7 +169,7 @@ foreign miniz {
     zip_writer_add_mem :: proc (pZip: ^zip_archive, pArchive_name: cstring, pBuf: rawptr, buf_size: c.size_t, level_and_flags: u32) -> b32 ---
     zip_writer_add_mem_ex :: proc (pZip: ^zip_archive, pArchive_name: cstring, pBuf: rawptr, buf_size: c.size_t, pComment: cstring, comment_size: u16, level_and_flags: u32, uncomp_size: u64, uncomp_crc32: u32) -> b32 ---
     zip_writer_add_mem_ex_v2 :: proc (pZip: ^zip_archive, pArchive_name: cstring, pBuf: rawptr, buf_size: c.size_t, pComment: cstring, comment_size: u16, level_and_flags: u32, uncomp_size: u64, uncomp_crc32: u32, last_modified: ^time_t, user_extra_data_local: cstring, user_extra_data_local_len: u32, user_extra_data_central: cstring, user_extra_data_central_len: u32) -> b32 ---
-    zip_writer_add_read_buf_callback :: proc (pZip: ^zip_archive, pArchive_name: cstring, read_callback: ^file_read_func, callback_opaque: rawptr, max_size: u64, #by_ptr pFile_time: time_t, pComment: rawptr, comment_size: u16, level_and_flags: u32, user_extra_data_local: cstring, user_extra_data_local_len: u32, user_extra_data_central: cstring, user_extra_data_central_len: u32) -> b32 ---
+    zip_writer_add_read_buf_callback :: proc (pZip: ^zip_archive, pArchive_name: cstring, read_callback: file_read_func, callback_opaque: rawptr, max_size: u64, #by_ptr pFile_time: time_t, pComment: rawptr, comment_size: u16, level_and_flags: u32, user_extra_data_local: cstring, user_extra_data_local_len: u32, user_extra_data_central: cstring, user_extra_data_central_len: u32) -> b32 ---
 
     zip_writer_add_from_zip_reader :: proc (pZip: ^zip_archive, pSource_zip: ^zip_archive, src_file_index: u32) -> b32 ---
     zip_writer_finalize_archive :: proc (pZip: ^zip_archive) -> b32 ---
@@ -198,14 +198,14 @@ zip_archive :: struct {
 
     m_file_offset_alignment: u64,
 
-    m_pAlloc: ^alloc_func,
-    m_pFree: ^free_func,
-    m_pRealloc: ^realloc_func,
+    m_pAlloc: alloc_func,
+    m_pFree: free_func,
+    m_pRealloc: realloc_func,
     m_pAlloc_opaque: rawptr,
 
-    m_pRead: ^file_read_func,
-    m_pWrite: ^file_write_func,
-    m_pNeeds_keepalive: ^file_needs_keepalive,
+    m_pRead: file_read_func,
+    m_pWrite: file_write_func,
+    m_pNeeds_keepalive: file_needs_keepalive,
     m_pIO_opaque: rawptr,
 
     m_pState: zip_internal_state,
