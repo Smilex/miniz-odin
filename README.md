@@ -7,4 +7,5 @@ Odin language - https://odin-lang.org
 I copied the stb_* style as used in vendor
 
 These bindings were written by hand
+
 I made sure that two examples worked from the beginning
