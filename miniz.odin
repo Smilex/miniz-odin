@@ -13,7 +13,7 @@ LIB :: (
 
 when LIB != "" {
 	when !#exists(LIB) {
-		#panic("Could not find the compiled MINIZ library, they can be compiled by in the src/ directory")
+		#panic("Could not find the compiled MINIZ library, it can be compiled in the src/ directory")
 	}
 }
 
